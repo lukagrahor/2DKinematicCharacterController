@@ -1,16 +1,21 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+
+[RequireComponent(typeof(Player))]
 public class PlayerInput : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    Player player;
+    InputAction moveAction;
     void Start()
     {
-        
+        player = GetComponent<Player>();
+        moveAction = InputSystem.actions.FindAction("Move");
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        float movementDirection = moveAction.ReadValue<Vector2>().x;
+        player.MovementDirection = movementDirection;
     }
 }

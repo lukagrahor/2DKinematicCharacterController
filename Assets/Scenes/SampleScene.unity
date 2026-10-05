@@ -351,7 +351,7 @@ GameObject:
   - component: {fileID: 837461815}
   - component: {fileID: 837461814}
   - component: {fileID: 837461813}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,7 +472,7 @@ Transform:
   m_GameObject: {fileID: 837461812}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.27, y: -2.17, z: 0}
+  m_LocalPosition: {x: 0.05, y: -2.17, z: 0}
   m_LocalScale: {x: 7.0713, y: 0.8941, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -493,7 +493,7 @@ GameObject:
   - component: {fileID: 910786585}
   - component: {fileID: 910786590}
   - component: {fileID: 910786591}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -524,6 +524,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cc3132389a2a174399b9ebcadbba7f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &910786587
 MonoBehaviour:
   m_ObjectHideFlags: 0
