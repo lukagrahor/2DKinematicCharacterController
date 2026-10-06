@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     float verticalRaySpacing;
 
     float desiredRaySpacing = 0.1f;
+    const float skinWidth = 0.015f;
 
     PlayerCorners playerCorners;
 
@@ -48,7 +49,10 @@ public class PlayerController : MonoBehaviour
 
     public void Move(Vector2 displacement)
     {
+        collisions.Reset();
         UpdatePlayerCorners();
+        // explain why the order is important
+        HorizontalCollisions(ref displacement);
         VerticalCollisions(ref displacement);
         rigidBody.MovePosition(rigidBody.position + displacement);
     }
@@ -56,6 +60,7 @@ public class PlayerController : MonoBehaviour
     void CalculateNumberOfRays()
     {
         Bounds bounds = boxCollider.bounds;
+        bounds.Expand(skinWidth * -2);
 
         horizontalRayCount = Mathf.RoundToInt(bounds.size.y / desiredRaySpacing);
         verticalRayCount = Mathf.RoundToInt(bounds.size.x / desiredRaySpacing);
@@ -68,6 +73,7 @@ public class PlayerController : MonoBehaviour
     void UpdatePlayerCorners()
     {
         Bounds bounds = boxCollider.bounds;
+        bounds.Expand(skinWidth * -2);
 
         playerCorners.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
         playerCorners.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
@@ -78,20 +84,45 @@ public class PlayerController : MonoBehaviour
     void VerticalCollisions(ref Vector2 displacement)
     {
         float directionY = Mathf.Sign(displacement.y);
-        float rayLength = Mathf.Abs(displacement.y);
+        float rayLength = Mathf.Abs(displacement.y) + skinWidth;
 
         for (int i = 0; i < verticalRayCount; i++)
         {
             Vector2 rayOrigin = (directionY == -1) ? playerCorners.bottomLeft : playerCorners.topLeft;
-            rayOrigin += (verticalRaySpacing * i + displacement.x) * Vector2.right;
+            rayOrigin += (verticalRaySpacing * i + displacement.x) * Vector2.right; // this is the reason why Horizontal collisions must run first
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, directionY * Vector2.up, rayLength, collisionMask);
             Debug.DrawRay(rayOrigin, directionY * rayLength * Vector2.up, hit ? Color.green : Color.red);
 
             if (hit)
             {
-                displacement.y = hit.distance * directionY;
+                displacement.y = (hit.distance - skinWidth) * directionY; // explain why must the skinWidth be added back
+                rayLength = hit.distance; // explain why does the rayLenght need to be set to the hit distance
+
                 collisions.below = directionY == -1;
                 collisions.above = directionY == 1;
+            }
+        }
+    }
+
+    void HorizontalCollisions(ref Vector2 displacement)
+    {
+        float directionX = Mathf.Sign(displacement.x);
+        float rayLength = Mathf.Abs(displacement.x) + skinWidth;
+
+        for (int i = 0; i < horizontalRayCount; i++)
+        {
+            Vector2 rayOrigin = (directionX == -1) ? playerCorners.topLeft : playerCorners.topRight;
+            rayOrigin += (horizontalRaySpacing * i) * Vector2.down;
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, directionX * Vector2.right, rayLength, collisionMask);
+            Debug.DrawRay(rayOrigin, directionX * rayLength * Vector2.right, hit ? Color.green : Color.red);
+
+            if (hit)
+            {
+                displacement.x = (hit.distance - skinWidth) * directionX;
+                rayLength = hit.distance;
+
+                collisions.left = directionX == -1;
+                collisions.right = directionX == 1;
             }
         }
     }
