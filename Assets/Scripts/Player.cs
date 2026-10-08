@@ -3,21 +3,18 @@ using UnityEngine;
 [RequireComponent (typeof(PlayerController))]
 public class Player : MonoBehaviour
 {
-    Vector2 velocity;
-    float moveSpeed = 10f;
+    PlayerController controller;
 
+    Vector2 velocity;
     float gravity;
     float maxJumpVelocity;
     float minJumpVelocity;
 
+    [SerializeField] float moveSpeed = 10f;
+
     [SerializeField] float maxJumpHeight = 4f;
     [SerializeField] float minJumpHeight = 0.5f;
     [SerializeField] float timeToJumpApex = 0.5f;
-
-    PlayerController controller;
-
-    public float MovementDirection { get; set; }
-    public bool IsJumpPressed { get; set; }
 
     [SerializeField] float accelerationTimeAirborne = 0.2f;
     [SerializeField] float acceleratonTimeGrounded = 0.1f;
@@ -28,6 +25,9 @@ public class Player : MonoBehaviour
 
     [SerializeField] float coyoteTime = 0.2f;
     float coyoteCounter;
+
+    public float MovementDirection { get; set; }
+    public bool IsJumpPressed { get; set; }
 
     public void SetJumpBuffer()
     {
@@ -45,7 +45,6 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         bool isGrounded = controller.CollisionData.below;
-        float targetVelocityX = moveSpeed * MovementDirection;
 
         jumpBufferCounter = Mathf.Max(0, jumpBufferCounter - Time.fixedDeltaTime);
 
@@ -60,15 +59,26 @@ public class Player : MonoBehaviour
         if (coyoteCounter > 0f && jumpBufferCounter > 0f)
         {
             velocity.y = maxJumpVelocity;
+
+            // reset to avoid firing more than once
             jumpBufferCounter = 0f;
             coyoteCounter = 0f;
         }
 
+        // starts slowing down the speed of the jump if space is released earlier
         if (!IsJumpPressed && velocity.y > minJumpVelocity)
         {
             velocity.y = minJumpVelocity;
         }
 
+        if (controller.CollisionData.left || controller.CollisionData.right)
+        {
+            velocity.x = 0f;
+            velocityXSmoothing = 0f;
+        }
+
+        // first update the velocity, then the position (displacement) - semi-implicit Euler integration
+        float targetVelocityX = moveSpeed * MovementDirection;
         velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, isGrounded ? acceleratonTimeGrounded : accelerationTimeAirborne);
         velocity.y += gravity * Time.fixedDeltaTime;
 

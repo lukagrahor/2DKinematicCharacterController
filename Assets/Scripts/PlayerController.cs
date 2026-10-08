@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     float horizontalRaySpacing;
     float verticalRaySpacing;
 
-    float desiredRaySpacing = 0.1f;
+    const float desiredRaySpacing = 0.1f;
     const float skinWidth = 0.015f;
 
     PlayerCorners playerCorners;
@@ -67,7 +67,6 @@ public class PlayerController : MonoBehaviour
 
         horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
         verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
-        //Debug.Log($"sizeY: {bounds.size.y}, rayDistance: {desiredRaySpacing}, horizontalRayCount: {horizontalRayCount}, horizontalRaySpacing: {horizontalRaySpacing}");
     }
 
     void UpdatePlayerCorners()
