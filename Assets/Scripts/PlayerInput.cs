@@ -20,5 +20,6 @@ public class PlayerInput : MonoBehaviour
         float movementDirection = moveAction.ReadValue<Vector2>().x;
         player.MovementDirection = movementDirection;
         player.IsJumpPressed = jumpAction.IsPressed();
+        if (jumpAction.WasPressedThisFrame()) player.SetJumpBuffer();
     }
 }
