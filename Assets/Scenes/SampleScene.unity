@@ -610,8 +610,8 @@ Transform:
   m_GameObject: {fileID: 837461812}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.05, y: -2.17, z: 0}
-  m_LocalScale: {x: 7.0713, y: 0.8941, z: 1}
+  m_LocalPosition: {x: -0.4339, y: -2.1913, z: 0}
+  m_LocalScale: {x: 6.103231, y: 0.85145146, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -677,6 +677,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4846f8fa83ddcc6468c6f2267b3a9f44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  jumpHeight: 4.8
+  timeToJumpApex: 0.4
 --- !u!212 &910786588
 SpriteRenderer:
   serializedVersion: 2

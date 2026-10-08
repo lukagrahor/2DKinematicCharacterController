@@ -4,19 +4,26 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Vector2 velocity;
-    float gravity = -10f;
     float moveSpeed = 10f;
+
+    float gravity;
+    float jumpVelocity;
+
+    [SerializeField] float jumpHeight = 4f;
+    [SerializeField] float timeToJumpApex = 0.5f;
 
     PlayerController controller;
 
     public float MovementDirection { get; set; }
+    public bool IsJumpPressed { get; set; }
 
     void Start()
     {
         controller = GetComponent<PlayerController> ();
+        gravity = (-2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpVelocity = Mathf.Abs(gravity) * timeToJumpApex;
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         bool isGrounded = controller.CollisionData.below;
@@ -25,6 +32,11 @@ public class Player : MonoBehaviour
         if (isGrounded || controller.CollisionData.above)
         {
             velocity.y = 0f;
+        }
+
+        if (isGrounded && IsJumpPressed)
+        {
+            velocity.y = jumpVelocity;
         }
 
         velocity.x = targetVelocityX;
